@@ -2080,6 +2080,9 @@ class BrowserAdapter {
   visitProposedToLocation(location, options) {
     this.navigator.startVisit(location, (options === null || options === void 0 ? void 0 : options.restorationIdentifier) || uuid(), options);
   }
+  visitProposedToNonVisitableLocation(location) {
+    window.location.href = location;
+  }
   visitStarted(visit) {
     this.location = visit.location;
     visit.loadCachedSnapshot();
@@ -2352,7 +2355,7 @@ class Navigator {
       if (locationIsVisitable(location, this.view.snapshot.rootLocation)) {
         this.delegate.visitProposedToLocation(location, options);
       } else {
-        window.location.href = location.toString();
+        this.delegate.visitProposedToNonVisitableLocation(location.toString());
       }
     }
   }
@@ -3078,6 +3081,9 @@ class Session {
   visitProposedToLocation(location, options) {
     extendURLWithDeprecatedProperties(location);
     this.adapter.visitProposedToLocation(location, options);
+  }
+  visitProposedToNonVisitableLocation(location) {
+    this.adapter.visitProposedToNonvisitableLocation(location);
   }
   visitStarted(visit) {
     if (!visit.acceptsStreamResponse) {
